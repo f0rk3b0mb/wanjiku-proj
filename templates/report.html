@@ -163,7 +163,7 @@
                     <a href="/logout" class="nav-link">Logout</a>
                 </div>
                 <div class="footer">
-                    <p class="mb-0">SecureFileStorage @2023</p>
+                    <p class="mb-0">SecureFileStorage </p>
                 </div>
             </div>
 
@@ -173,19 +173,41 @@
                     <div class="col-md-10">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="mb-0">View Annual Report</h3>
+                                <h3 class="mb-0">Generate System Reports</h3>
                             </div>
                             <div class="card-body">
                                 <form method="post" action="/report">
-                                    <div class="form-group">
-                                        <label for="selected_type">Generate report for:</label>
-                                        <select class="form-control" name="selected_type" id="selected_type">
-                                            <option value="users">Users</option>
-                                            <option value="files">Files</option>
-                                            <option value="backups">Backups</option>
+                                    <div class="form-group mb-3">
+                                        <label for="selected_type">Report Type:</label>
+                                        <select class="form-control" name="selected_type" id="selected_type" required>
+                                            <option value="certificates">Certificate Verification Report</option>
+                                            <option value="files">File Integrity Report</option>
+                                            <option value="backups">Backup Health Report</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">View Report</button>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="start_date">Start Date:</label>
+                                                <input type="date" class="form-control" name="start_date" id="start_date">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="end_date">End Date:</label>
+                                                <input type="date" class="form-control" name="end_date" id="end_date">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% if error %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ error }}
+                                    </div>
+                                    {% endif %}
+
+                                    <button type="submit" class="btn btn-primary">Generate Report</button>
                                 </form>
                             </div>
                         </div>

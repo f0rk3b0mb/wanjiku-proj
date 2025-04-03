@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Certificate</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      min-height: 100vh;
+    }
+    .side_bar {
+      background: linear-gradient(135deg, #343a40, #212529);
+      min-height: 100vh;
+      color: white;
+      padding: 20px;
+    }
+    .nav-link {
+      color: rgba(255,255,255,0.9) !important;
+      transition: all 0.3s;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .nav-link:hover {
+      color: white !important;
+      background: rgba(255,255,255,0.1);
+      transform: translateX(5px);
+    }
+    .nav-link.active {
+      background: rgba(255,255,255,0.2);
+      color: white !important;
+    }
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s;
+      margin-bottom: 20px;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card-header {
+      background: linear-gradient(135deg, #343a40, #212529);
+      color: white;
+      border-radius: 15px 15px 0 0 !important;
+      padding: 1.5rem;
+    }
+    .card-body {
+      padding: 2rem;
+    }
+    .form-control {
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #dee2e6;
+      transition: all 0.3s;
+    }
+    .form-control:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+      border-color: #80bdff;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0056b3, #004085);
+      transform: translateY(-2px);
+    }
+    .alert {
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .loading-spinner {
+      width: 3rem;
+      height: 3rem;
+    }
+    .preview-section {
+      display: none;
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .preview-section h4 {
+      margin-bottom: 1rem;
+    }
+    .preview-content {
+      font-family: 'Times New Roman', Times, serif;
+      line-height: 1.6;
+    }
+    .certificate-form {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      margin-top: 30px;
+    }
+    .form-title {
+      color: #343a40;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="side_bar col-md-3">
+        <h4 class="mb-4">Generate Certificate</h4>
+        <div class="nav flex-column">
+          <a href="/dashboard" class="nav-link">Dashboard</a>
+          <a href="/generate_certificate" class="nav-link active">Create document</a>
+          <a href="/upload" class="nav-link">Upload document</a>
+          <a href="/verify" class="nav-link">Verify document</a>
+          <a href="/faq" class="nav-link">Faq</a>
+          <a href="/logout" class="nav-link">Logout</a>
+        </div>
+        <div class="footer">
+          <p class="mb-0"></p>
+        </div>
+      </div>
+      <div class="col-md-9 p-4">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="mb-0">Generate Academic Certificate</h3>
+              </div>
+              <div class="card-body">
+                <div id="error" class="alert alert-danger" style="display: none;"></div>
+                <div id="success" class="alert alert-success" style="display: none;"></div>
+                <div class="certificate-form">
+                  <h2 class="form-title">Generate Certificate</h2>
+                  <form id="certificateForm">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="studentName" class="form-label">Student Name</label>
+                        <input type="text" class="form-control" id="studentName" name="studentName" required>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="studentId" class="form-label">Student ID</label>
+                        <input type="text" class="form-control" id="studentId" name="studentId" required>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="degree" class="form-label">Degree</label>
+                        <input type="text" class="form-control" id="degree" name="degree" required>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="major" class="form-label">Major</label>
+                        <input type="text" class="form-control" id="major" name="major" required>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="graduationDate" class="form-label">Graduation Date</label>
+                        <input type="date" class="form-control" id="graduationDate" name="graduationDate" required>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="certificateId" class="form-label">Certificate ID</label>
+                        <input type="text" class="form-control" id="certificateId" name="certificateId" required>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="issuerName" class="form-label">Issuer Name</label>
+                        <input type="text" class="form-control" id="issuerName" name="issuerName" required>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="issuerTitle" class="form-label">Issuer Title</label>
+                        <input type="text" class="form-control" id="issuerTitle" name="issuerTitle" required>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="institutionName" class="form-label">Institution Name</label>
+                      <input type="text" class="form-control" id="institutionName" name="institutionName" required>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Generate Certificate</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="loading">
+                  <div class="spinner-border loading-spinner text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <p class="mt-2">Generating certificate...</p>
+                </div>
+
+                <div id="previewSection" class="preview-section">
+                  <h4>Certificate Preview</h4>
+                  <div id="previewContent" class="preview-content">
+                    <!-- Preview content will be inserted here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function previewCertificate() {
+      const form = document.getElementById('certificateForm');
+      const previewSection = document.getElementById('previewSection');
+      const previewContent = document.getElementById('previewContent');
+      
+      // Get form values
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      
+      // Format date
+      const graduationDate = new Date(data.graduationDate).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // Generate preview HTML
+      previewContent.innerHTML = `
+        <div class="text-center mb-4">
+          <h2>Certificate of Completion</h2>
+          <h3>${data.institutionName}</h3>
+        </div>
+        
+        <p class="mb-4">This is to certify that</p>
+        
+        <h4 class="mb-4">${data.studentName}</h4>
+        
+        <p class="mb-4">has successfully completed the requirements for the degree of</p>
+        
+        <h4 class="mb-4">${data.degree} in ${data.major}</h4>
+        
+        <p class="mb-4">on ${graduationDate}</p>
+        
+        <div class="mt-5">
+          <p>Certificate ID: ${data.certificateId}</p>
+          <p>Student ID: ${data.studentId}</p>
+        </div>
+        
+        <div class="mt-5">
+          <p>${data.issuerName}</p>
+          <p>${data.issuerTitle}</p>
+        </div>
+      `;
+      
+      previewSection.style.display = 'block';
+    }
+
+    document.getElementById('certificateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const loading = document.querySelector('.loading');
+      const errorDiv = document.getElementById('error');
+      const successDiv = document.getElementById('success');
+      
+      // Hide previous messages
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      
+      // Show loading spinner
+      loading.style.display = 'block';
+      
+      const formData = new FormData(e.target);
+      
+      try {
+        const response = await fetch('/api/generate_certificate', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          successDiv.textContent = 'Certificate generated successfully!';
+          successDiv.style.display = 'block';
+          window.location.href = '/dashboard';
+        } else {
+          errorDiv.textContent = data.error || 'Failed to generate certificate';
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        loading.style.display = 'none';
+        errorDiv.textContent = 'An error occurred while generating the certificate. Please try again.';
+        errorDiv.style.display = 'block';
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+
+</html> 

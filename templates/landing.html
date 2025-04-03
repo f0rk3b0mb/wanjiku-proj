@@ -4,74 +4,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Replace with your local Bootstrap CSS link -->
-    <title>Welcome</title>
+    <title>Secure Certificate Verification System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-            border-radius: 0px;
-            padding-left: 30px;
-            padding-right: 30px;
+        body {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            min-height: 100vh;
         }
-
-        .top_bar {
-            display: flex;
-            padding: 16px 40px;
-            justify-content: space-between;
-            align-items: center;
-            align-self: stretch;
-            border-radius: 0px;
-            border-bottom: 5px solid black;
+        .hero-section {
+            background: linear-gradient(135deg, #343a40, #212529);
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 50px;
         }
-
-        .mini_table {
-            max-width: 500px;
-            text-align: center;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s;
         }
-
-        .logo img {
-            width: 100px;
-            height: 100px;
-            margin-left: 50px;
-            border-radius: 30px;
+        .section-card:hover {
+            transform: translateY(-5px);
+        }
+        .section-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .btn-custom {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .feature-list li:before {
+            content: "✓";
+            color: #28a745;
+            position: absolute;
+            left: 0;
+        }
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="body">
-            <div class="top_bar">
-                <h3>Welcome</h3>
-                <div class="link_bar">
-                    <a href="/login" class="btn btn-primary">Login</a>
-                    <a href="/register" class="btn btn-secondary">Register</a>
-                    <a href="/faq" class="btn btn-info">Help</a>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 mb-4">Secure Academic Document Verification System</h1>
+                    <p class="lead mb-4">A blockchain-powered platform for secure certificate issuance and verification.</p>
                 </div>
-            </div>
-            <ul>
-                <center>
-                    <h3>Secure File Storage system</h3>
-                </center>
-            </ul>
-            <div>
-                <p>This is a system created to help Examination officers and Admission securely store files.
-                    <br><br>
-                    It stores files by encrypting them using AES (advanced encryption algorithm).
-                    <br><br>
-                    The system also creates backups of stored files.
-                </p>
             </div>
         </div>
     </div>
-    <script src="main.js"></script>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <!-- Academic Institutions Section -->
+            <div class="col-md-6">
+                <div class="section-card">
+                    <div class="text-center">
+                        <i class="fas fa-university section-icon"></i>
+                        <h2>Academic Institutions</h2>
+                        <p class="lead">Issue and manage certificates securely</p>
+                    </div>
+                    <ul class="feature-list mb-4">
+                        <li>Issue academic documents</li>
+                        <li>Track document issuance</li>
+                        <li>Secure storage system</li>
+                    </ul>
+                    <div class="text-center">
+                        <a href="/login" class="btn btn-primary btn-custom">Login to System</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employers Section -->
+            <div class="col-md-6">
+                <div class="section-card">
+                    <div class="text-center">
+                        <i class="fas fa-building section-icon"></i>
+                        <h2>Employers</h2>
+                        <p class="lead">Verify certificates instantly</p>
+                    </div>
+                    <ul class="feature-list mb-4">
+                        <li>Instant certificate verification</li>
+                        <li>Detailed verification reports</li>
+                        <li>Blockchain-backed security</li>
+                        <li>Easy-to-use interface</li>
+                    </ul>
+                    <div class="text-center">
+                        <a href="/verify" class="btn btn-success btn-custom">Verify Certificates</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>About Us</h5>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

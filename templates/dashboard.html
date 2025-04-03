@@ -137,12 +137,14 @@
         <h4 class="mb-4">Dashboard</h4>
         <div class="nav flex-column">
           <a href="/dashboard" class="nav-link active">Dashboard</a>
-          <a href="/upload" class="nav-link">Upload Files</a>
-          <a href="/verify" class="nav-link">Verify</a>
+          <a href="/generate_certificate" class="nav-link">Create document</a>
+          <a href="/upload" class="nav-link">Upload document</a>
+          <a href="/verify" class="nav-link">Verify document</a>
+          <a href="/faq" class="nav-link">Faq</a>
           <a href="/logout" class="nav-link">Logout</a>
         </div>
         <div class="footer">
-          <p class="mb-0">@2023</p>
+          <p class="mb-0"></p>
         </div>
       </div>
       <div class="col-md-9 p-4">
@@ -153,54 +155,25 @@
                 <h3 class="mb-0">My Files</h3>
               </div>
               <div class="card-body">
-                {% if error %}
-                  <div class="alert alert-danger">{{ error }}</div>
-                {% endif %}
-                {% if message %}
-                  <div class="alert alert-info">{{ message }}</div>
-                {% endif %}
-                {% if files %}
+                <div id="error" class="alert alert-danger" style="display: none;"></div>
+                <div id="message" class="alert alert-info" style="display: none;"></div>
+                <div id="files-container">
                   <div class="table-responsive">
                     <table class="table table-hover">
                       <thead>
                         <tr>
                           <th>File Name</th>
-                          <th>Upload Date</th>
-                          <th>Size</th>
-                          <th>Status</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {% for file in files %}
-                          <tr>
-                            <td>{{ file.file_name }}</td>
-                            <td>{{ file.upload_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                            <td>{{ (file.file_size / 1024)|round(2) }} KB</td>
-                            <td>
-                              {% if file.is_archived %}
-                                <span class="badge bg-secondary">Archived</span>
-                              {% else %}
-                                <span class="badge bg-success">Active</span>
-                              {% endif %}
-                            </td>
-                            <td>
-                              <div class="btn-group" role="group">
-                                <a href="{{ url_for('web.download_file', file_id=file.id) }}" class="btn btn-sm btn-primary">Download</a>
-                                <a href="{{ url_for('web.view_file', file_id=file.id) }}" class="btn btn-sm btn-info">View</a>
-                                <button onclick="deleteFile({{ file.id }})" class="btn btn-sm btn-danger">Delete</button>
-                              </div>
-                            </td>
-                          </tr>
-                        {% endfor %}
+                      <tbody id="files-table-body">
                       </tbody>
                     </table>
                   </div>
-                {% else %}
-                  <div class="alert alert-info">
-                    <p class="mb-0">No files uploaded yet. <a href="{{ url_for('web.upload') }}" class="alert-link">Upload a file</a> to get started.</p>
-                  </div>
-                {% endif %}
+                </div>
+                <div id="no-files" class="alert alert-info" style="display: none;">
+                  <p class="mb-0">No files uploaded yet. <a href="{{ url_for('web.upload') }}" class="alert-link">Upload a file</a> to get started.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -211,20 +184,66 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function deleteFile(fileId) {
-      if (confirm('Are you sure you want to delete this file?')) {
-        fetch(`/api/deleteFile/${fileId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
+    // Function to fetch and display files
+    function fetchFiles() {
+      fetch('/api/viewFiles')
         .then(response => response.json())
         .then(data => {
-          if (data.success) {
-            location.reload();
+          const filesTableBody = document.getElementById('files-table-body');
+          const noFilesMessage = document.getElementById('no-files');
+          const filesContainer = document.getElementById('files-container');
+
+          // Clear existing content
+          filesTableBody.innerHTML = '';
+
+          if (data.private && data.private.length > 0) {
+            // Show files table, hide no-files message
+            filesContainer.style.display = 'block';
+            noFilesMessage.style.display = 'none';
+
+            // Add each file to the table
+            data.private.forEach(fileName => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${fileName}</td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <a href="/api/download/${fileName}" class="btn btn-sm btn-primary">Download</a>
+  
+                  </div>
+                </td>
+              `;
+              filesTableBody.appendChild(row);
+            });
           } else {
-            alert('Error deleting file: ' + data.message);
+            // Show no-files message, hide files table
+            filesContainer.style.display = 'none';
+            noFilesMessage.style.display = 'block';
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('error').textContent = 'Error fetching files. Please try again.';
+          document.getElementById('error').style.display = 'block';
+        });
+    }
+
+    // Function to delete file
+    function deleteFile(fileName) {
+      if (confirm('Are you sure you want to delete this file?')) {
+        fetch('/api/deleteFiles', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `file_name=${encodeURIComponent(fileName)}`
+        })
+        .then(response => response.text())
+        .then(data => {
+          if (data === "File will be archived") {
+            fetchFiles(); // Refresh the files list
+          } else {
+            alert('Error deleting file: ' + data);
           }
         })
         .catch(error => {
@@ -233,6 +252,9 @@
         });
       }
     }
+
+    // Fetch files when page loads
+    document.addEventListener('DOMContentLoaded', fetchFiles);
   </script>
 </body>
 

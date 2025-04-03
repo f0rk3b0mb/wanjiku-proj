@@ -4,105 +4,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Replace with your local Bootstrap CSS link -->
+    <title>FAQ - Certificate Verification System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .top_bar {
-            display: flex;
-            padding: 16px 40px;
-            justify-content: space-between;
-            align-items: center;
-            align-self: stretch;
-            border-radius: var(--corner-radius-none, 0px);
-            border-bottom: 1px solid var(--content-stroke, #E0E4F0);
-            border-width: 5px;
-            border-color: black;
+        body {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            min-height: 100vh;
         }
-
-        .q_bar {
-            background-color: grey;
-            width: 50%;
-            height: 40px;
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .side_bar {
+            background: linear-gradient(135deg, #343a40, #212529);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white !important;
+        }
+        .card {
+            border: none;
             border-radius: 15px;
-            padding: 5px;
-            align-items: center;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s;
+            margin-bottom: 20px;
         }
-
-        .body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--spacing-4xI, 40px);
-            border-radius: var(--corner-radius-none, 0px);
-            padding-left: 30px;
-            padding-right: 30px;
-
+        .card:hover {
+            transform: translateY(-5px);
         }
-
-        .footer {
+        .card-header {
+            background: linear-gradient(135deg, #343a40, #212529);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .faq-item {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.5rem;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            cursor: pointer;
             display: flex;
-            width: 300px;
-            padding: 16px 20px;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .faq-question:hover {
+            color: #3498db;
+        }
+        .faq-answer {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+        .faq-icon {
+            color: #3498db;
+            margin-right: 1rem;
+        }
+        .contact-section {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+        .contact-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        .contact-info {
+            display: flex;
             justify-content: center;
-            align-items: flex-start;
-            gap: var(--spacing-s, 12px);
-            border-top: 1px solid var(--content-stroke, #E0E4F0);
-            background: var(--background-blue, #F7F8FA);
-
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #7f8c8d;
+        }
+        .contact-item i {
+            color: #3498db;
+        }
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
         }
     </style>
-    <!-- Your custom CSS file -->
 </head>
 
 <body>
-    <div class="container">
-        <div class="body">
-            <div class="top_bar">
-                <h4>Frequently asked questions</h4>
-                <div class="link_bar">
-                    <a href="/api/download/public/manual" class="btn btn-primary mr-2">User Manual</a>
-                    <a href="/dashboard" class="btn btn-secondary">Dashboard</a>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="side_bar col-md-3">
+                <h4 class="mb-4">Faq</h4>
+                <div class="nav flex-column">
+                    <a href="/dashboard" class="nav-link">Dashboard</a>
+                    <a href="/generate_certificate" class="nav-link">Create document</a>
+                    <a href="/upload" class="nav-link">Upload document</a>
+                    <a href="/verify" class="nav-link">Verify document</a>
+                    <a href="/faq" class="nav-link active">Faq</a>
+                    <a href="/logout" class="nav-link">Logout</a>
+                </div>
+                <div class="footer">
+                    <p class="mb-0"></p>
                 </div>
             </div>
 
-            <div class="q_bar" onmouseover="show(this)" onmouseout="hide(this)">
-                <p>How are files secured?</p>
-                <answer hidden>Files are encrypted using AES encryption upon upload</answer>
-            </div>
-            <div class="q_bar" onmouseover="show(this)" onmouseout="hide(this)">
-                <p>How can I delete my files?</p>
-                <answer hidden>Files can be deleted by sending a deletion request to the admin</answer>
-            </div>
-            <div class="q_bar" onmouseover="show(this)" onmouseout="hide(this)">
-                <p>Is there a backup for files I upload?</p>
-                <answer hidden>The system creates a copy of files uploaded</answer>
-            </div>
+            <!-- Main Content -->
+            <div class="col-md-9 p-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="mb-0">Frequently Asked Questions</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span><i class="fas fa-question-circle faq-icon"></i>What is the Certificate Verification System?</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Our Certificate Verification System is a blockchain-based platform that allows educational institutions to generate, store, and verify academic certificates. It ensures the authenticity and integrity of certificates through cryptographic verification and blockchain technology.
+                                    </div>
+                                </div>
 
-            <br>
-            <br>
-            <p>For more queries, contact the system administrator <a
-                    href="mailto:admin@securestorage.web">admin@securestorage.web</a></p>
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span><i class="fas fa-question-circle faq-icon"></i>How do I verify a certificate?</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        To verify a certificate, simply upload the PDF certificate file through our verification page. The system will automatically calculate the file's hash and compare it with the stored hash in the blockchain. You'll receive immediate feedback on whether the certificate is authentic.
+                                    </div>
+                                </div>
 
-            <div class="footer">
-                <b>Secure file storage system @2023</b>
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span><i class="fas fa-question-circle faq-icon"></i>How are certificates stored securely?</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        Certificates are stored using multiple layers of security:
+                                        <ul>
+                                            <li>Files are encrypted before storage</li>
+                                            <li>Certificate hashes are stored on the blockchain</li>
+                                            <li>Access is restricted to authorized users</li>
+                                            <li>All transactions are recorded and immutable</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span><i class="fas fa-question-circle faq-icon"></i>What information is required to generate a certificate?</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        When generating a certificate, you'll need to provide:
+                                        <ul>
+                                            <li>Student's full name and ID</li>
+                                            <li>Degree and major</li>
+                                            <li>Graduation date</li>
+                                            <li>Issuer's name and title</li>
+                                            <li>Institution name</li>
+                                            <li>Unique certificate ID</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span><i class="fas fa-question-circle faq-icon"></i>Can I modify a certificate after it's been issued?</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        No, once a certificate is issued and stored on the blockchain, it cannot be modified. This is a security feature to ensure the integrity of the certification process. If a correction is needed, a new certificate must be issued with a new certificate ID.
+                                    </div>
+                                </div>
+
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <span><i class="fas fa-question-circle faq-icon"></i>What happens if verification fails?</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        If verification fails, it means the certificate's hash doesn't match the stored hash in the blockchain. This could indicate:
+                                        <ul>
+                                            <li>The certificate has been tampered with</li>
+                                            <li>The certificate is not in our system</li>
+                                            <li>The certificate ID is incorrect</li>
+                                            <li>The file is corrupted</li>
+                                        </ul>
+                                        In such cases, please contact the issuing institution for assistance.
+                                    </div>
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="/static/js/main.js"></script>
-    <!-- Your JavaScript file -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <!-- Popper.js -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listeners to FAQ questions
+            const questions = document.querySelectorAll('.faq-question');
+            questions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

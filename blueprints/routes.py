@@ -786,13 +786,15 @@ def create_certificate_file(certificate_data):
         
         # Save the PDF
         c.save()
+
+        file_hash = calculate_sha256(filepath)
         
         # Calculate the hash of the generated file
         success, message = encrypt_file(filepath)
         if not success:
             return None, None
         
-        file_hash = calculate_sha256(filepath)
+        
         
         return filepath, file_hash
     except Exception as e:

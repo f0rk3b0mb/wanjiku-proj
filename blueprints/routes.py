@@ -64,7 +64,7 @@ def login():
                     session["username"] = user.username
                     session["role"] = user.role_id
                     if otp_code:
-                        return redirect(url_for("web.dashboard"))
+                        return redirect(url_for("web.verify_otp"))
                 else:
                     return render_template("login.html", message="Incorrect username or password")
             else:
@@ -190,7 +190,7 @@ def add_files():
             
             # Store hash in blockchain
             contract_address = os.getenv('CONTRACT_ADDRESS')
-            contract_abi = '[{"inputs": [], "stateMutability": "nonpayable", "type": "constructor"}, {"anonymous": false, "inputs": [{"indexed": true, "internalType": "string", "name": "certificateId", "type": "string"}, {"indexed": false, "internalType": "string", "name": "ipfsHash", "type": "string"}, {"indexed": true, "internalType": "address", "name": "issuer", "type": "address"}], "name": "CertificateIssued", "type": "event"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}], "name": "getIssuer", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}, {"internalType": "string", "name": "ipfsHash", "type": "string"}], "name": "issueCertificate", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "owner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}], "name": "verifyCertificate", "outputs": [{"internalType": "string", "name": "", "type": "string"}], "stateMutability": "view", "type": "function"}]'  # Add your contract ABI here
+            contract_abi = os.getenv('CONTRACT_ABI')  # Add your contract ABI here
             account_address = os.getenv('ACCOUNT_ADDRESS')  # Set in environment
             private_key = os.getenv('PRIVATE_KEY')  # Set in environment
             
@@ -512,7 +512,7 @@ def verify_file():
             
             # Get contract details from environment
             contract_address = os.getenv('CONTRACT_ADDRESS')
-            contract_abi = '[{"inputs": [], "stateMutability": "nonpayable", "type": "constructor"}, {"anonymous": false, "inputs": [{"indexed": true, "internalType": "string", "name": "certificateId", "type": "string"}, {"indexed": false, "internalType": "string", "name": "ipfsHash", "type": "string"}, {"indexed": true, "internalType": "address", "name": "issuer", "type": "address"}], "name": "CertificateIssued", "type": "event"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}], "name": "getIssuer", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}, {"internalType": "string", "name": "ipfsHash", "type": "string"}], "name": "issueCertificate", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "owner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}], "name": "verifyCertificate", "outputs": [{"internalType": "string", "name": "", "type": "string"}], "stateMutability": "view", "type": "function"}]'
+            contract_abi = os.getenv('CONTRACT_ABI')
             
             # Look up the file in our database to get the file name and certificate ID
             db_file = File.query.filter_by(ipfs_hash=file_hash).first()
@@ -696,7 +696,7 @@ def generate_certificate_api():
 
         # Get contract details from environment
         contract_address = os.getenv('CONTRACT_ADDRESS')
-        contract_abi = '[{"inputs": [], "stateMutability": "nonpayable", "type": "constructor"}, {"anonymous": false, "inputs": [{"indexed": true, "internalType": "string", "name": "certificateId", "type": "string"}, {"indexed": false, "internalType": "string", "name": "ipfsHash", "type": "string"}, {"indexed": true, "internalType": "address", "name": "issuer", "type": "address"}], "name": "CertificateIssued", "type": "event"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}], "name": "getIssuer", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}, {"internalType": "string", "name": "ipfsHash", "type": "string"}], "name": "issueCertificate", "outputs": [], "stateMutability": "nonpayable", "type": "function"}, {"inputs": [], "name": "owner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"}, {"inputs": [{"internalType": "string", "name": "certificateId", "type": "string"}], "name": "verifyCertificate", "outputs": [{"internalType": "string", "name": "", "type": "string"}], "stateMutability": "view", "type": "function"}]'
+        contract_abi = os.getenv('CONTRACT_ABI')
         account_address = os.getenv('ACCOUNT_ADDRESS')
         private_key = os.getenv('PRIVATE_KEY')
 

@@ -63,8 +63,12 @@ def login():
                     session["user_id"] = user.id
                     session["username"] = user.username
                     session["role"] = user.role_id
-                    if otp_code:
-                        return redirect(url_for("web.verify_otp"))
+                    if user.role_id == 1:
+                        return redirect(url_for("web.admin"))
+                    else:
+                        return redirect(url_for("web.dashboard"))
+                    #if otp_code:
+                    #    return redirect(url_for("web.dashboard"))
                 else:
                     return render_template("login.html", message="Incorrect username or password")
             else:
@@ -135,13 +139,13 @@ def logout():
     session.pop("role",None)
     return redirect(url_for("web.login")) 
 
-#@web.route("/admin")
-#@admin_required  # Apply the decorator to protect this admin route
-#def admin():
-#    user = User.query.all()
-#    files = File.query.all()
-#
-#    return render_template("admin.html", username= session["username"]) 
+@web.route("/admin")
+@admin_required  # Apply the decorator to protect this admin route
+def admin():
+    user = User.query.all()
+    files = File.query.all()
+
+    return render_template("admin.html", username= session["username"]) 
 
 
 
@@ -296,30 +300,112 @@ def download_file(file_name):
 
 
 
-#@api.route('/pending_users', methods=['GET'])
-#@admin_required
-#def get_pending_users():
-#    # Query the database to get pending user registrations
-#    pending_users = User.query.filter_by(is_approved="False").all()
-#    # Create a list to store user details
-#    pending_user_details = []
-#
-#    for user in pending_users:
-#        user_detail = {
-#            'id': user.id,
-#            'username': user.username,
-#            'email': user.email,
-#            'role': None
-#        }
-#        if user.role_id:
-#            role = Role.query.get(user.role_id)
-#            if role:
-#                user_detail['role'] = role.role_name
-#
-#        pending_user_details.append(user_detail)
-#
-#    # Return the pending user details in JSON format using jsonify
-#    return jsonify(pending_user_details)
+@api.route('/pending_users', methods=['GET'])
+@admin_required
+def get_pending_users():
+    # Query the database to get pending user registrations
+    pending_users = User.query.filter_by(is_approved="False").all()
+    # Create a list to store user details
+    pending_user_details = []
+
+    for user in pending_users:
+        user_detail = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'role': None
+        }
+        if user.role_id:
+            role = Role.query.get(user.role_id)
+            if role:
+                user_detail['role'] = role.role_name
+
+        pending_user_details.append(user_detail)
+
+    # Return the pending user details in JSON format using jsonify
+    return jsonify(pending_user_details)
+
+
+
+
+@api.route('/approve_user/<int:user_id>', methods=['POST'])
+@admin_required
+def approve_user(user_id):
+    # Check if the request is a POST request
+    if request.method == 'POST':
+        # Find the user by ID
+        user = User.query.get(user_id)
+        
+        if user:
+            # Mark the user as approved
+            user.is_approved = "True"
+            db.session.commit()
+            user_folder = os.path.join("uploads", user.username)
+            os.makedirs(user_folder, exist_ok=True)
+            return jsonify({'message': 'User has been approved.'}), 200
+        else:
+            return jsonify({'error': 'User not found.'}), 404
+
+    return jsonify({'error': 'Invalid request method.'}), 405
+
+@api.route('/reject_user/<int:user_id>', methods=['POST'])
+@admin_required
+def reject_user(user_id):
+    # Check if the request is a POST request
+    if request.method == 'POST':
+        # Find the user by ID
+        user = User.query.get(user_id)
+        rejection_reason = request.json.get('rejectionReason')
+        
+        if user: 
+            reasons_file_path = os.path.join('logs', 'rejection_reasons.log')
+            with open(reasons_file_path, 'a') as reasons_file:
+                reasons_file.write(f"Username: {user.username}, Email: {user.email}, Reason: {rejection_reason}\n")
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({'message': 'User has been removed'}), 200
+        else:
+            return jsonify({'error': 'User not found.'}), 404
+
+    return jsonify({'error': 'Invalid request method.'}), 405
+
+
+
+@web.route("/users", methods=["GET", "POST"])
+@admin_required
+def manage_users():
+    if request.method == "POST":
+        # Handle the user deletion based on the submitted form data
+        user_id_to_delete = request.form.get("user_id_to_delete")
+        
+        # Check if the user_id_to_delete is valid (e.g., exists and is not the admin)
+        user_to_delete = User.query.get(user_id_to_delete)
+        #user_to_delete_files = File.query.filter_by(user_id=user_id_to_delete)
+        if user_to_delete and user_to_delete.role_name != "admin":
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            #db.session.delete(user_to_delete_files)
+            #db.session.commit
+            #user_folder = os.path.join("uploads", user_to_delete.username)
+            #os.rmdir(user_folder, exist_ok=True)
+            
+
+            # Redirect to the same page after user deletion
+            return redirect(url_for("web.manage_users"))
+
+    # Retrieve a list of all users from the database
+    users = User.query.all()
+
+    return render_template("users.html", users=users)
+
+@web.route("/files", methods=["GET"])
+@admin_required
+def files():
+    files = File.query.all()
+
+    return render_template("files.html", files=files)
+
+
 
 #@api.route("/archived_files", methods=["GET"])
 #@admin_required
@@ -357,86 +443,6 @@ def download_file(file_name):
 #        return jsonify({"message": "File Restored to system"})
 #    else:
 #        return jsonify({"message": "File not found or not archived."})
-
-
-#@api.route('/approve_user/<int:user_id>', methods=['POST'])
-#@admin_required
-#def approve_user(user_id):
-#    # Check if the request is a POST request
-#    if request.method == 'POST':
-#        # Find the user by ID
-#        user = User.query.get(user_id)
-#        
-#        if user:
-#            # Mark the user as approved
-#            user.is_approved = "True"
-#            db.session.commit()
-#            user_folder = os.path.join("uploads", user.username)
-#            os.makedirs(user_folder, exist_ok=True)
-#            return jsonify({'message': 'User has been approved.'}), 200
-#        else:
-#            return jsonify({'error': 'User not found.'}), 404
-#
-#    return jsonify({'error': 'Invalid request method.'}), 405
-
-#@api.route('/reject_user/<int:user_id>', methods=['POST'])
-#@admin_required
-#def reject_user(user_id):
-#    # Check if the request is a POST request
-#    if request.method == 'POST':
-#        # Find the user by ID
-#        user = User.query.get(user_id)
-#        rejection_reason = request.json.get('rejectionReason')
-#        
-#        if user: 
-#            reasons_file_path = os.path.join('logs', 'rejection_reasons.log')
-#            with open(reasons_file_path, 'a') as reasons_file:
-#                reasons_file.write(f"Username: {user.username}, Email: {user.email}, Reason: {rejection_reason}\n")
-#            db.session.delete(user)
-#            db.session.commit()
-#            return jsonify({'message': 'User has been removed'}), 200
-#        else:
-#            return jsonify({'error': 'User not found.'}), 404
-#
-#    return jsonify({'error': 'Invalid request method.'}), 405
-
-
-
-#@web.route("/users", methods=["GET", "POST"])
-#@admin_required
-#def manage_users():
-#    if request.method == "POST":
-#        # Handle the user deletion based on the submitted form data
-#        user_id_to_delete = request.form.get("user_id_to_delete")
-#        
-#        # Check if the user_id_to_delete is valid (e.g., exists and is not the admin)
-#        user_to_delete = User.query.get(user_id_to_delete)
-#        user_to_delete_files = File.query.filter_by(user_id=user_id_to_delete)
-#        if user_to_delete and user_to_delete.role != "admin":
-#            db.session.delete(user_to_delete)
-#            db.session.commit()
-#            #db.session.delete(user_to_delete_files)
-#            #db.session.commit
-#            #user_folder = os.path.join("uploads", user_to_delete.username)
-#            #os.rmdir(user_folder, exist_ok=True)
-#            
-#
-#            # Redirect to the same page after user deletion
-#            return redirect(url_for("web.manage_users"))
-#
-#    # Retrieve a list of all users from the database
-#    users = User.query.all()
-#
-#    return render_template("users.html", users=users)
-
-#@web.route("/files", methods=["GET"])
-#@admin_required
-#def files():
-#    files = File.query.all()
-#
-#    return render_template("files.html", files=files)
-
-
 
 #@web.route("/viewBackups", methods=["GET"])
 #@admin_required

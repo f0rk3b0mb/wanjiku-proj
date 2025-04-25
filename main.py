@@ -35,17 +35,13 @@ def add_default_record():
         db.session.add(default_user)
         admin_role = Role(id=1 , role_name="admin")
         db.session.add(admin_role)
-        user_role = Role(id=2 , role_name="user")
+        user_role = Role(id=2 , role_name="Staff")
         db.session.add(user_role)
-        admission_role = Role(id=3 , role_name="admission officer")
-        db.session.add(admission_role)
-        exams_role = Role(id=4 , role_name="Exams officer")
-        db.session.add(exams_role)
         db.session.commit()
 
 if __name__ == "__main__":
     with app.app_context():
-        db.drop_all()  #for testing purposes
+        #db.drop_all()  #for testing purposes
         db.create_all()
-        add_default_record()  # for testing purposes
+        #add_default_record()  # for testing purposes
     app.run(host="0.0.0.0", port=1234, debug=True)#,ssl_context=('https_certs/cert.pem', 'https_certs/key.pem'))

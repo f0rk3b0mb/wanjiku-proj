@@ -27,7 +27,7 @@ def before_request():
         session.modified = True  # Reset the session timer on each request
 
     # Define a list of allowed endpoints for non-logged-in users
-    allowed_endpoints = ['web.login', 'web.register', 'web.index' , 'web.faq', 'web.verify']  # Add more endpoints as needed
+    allowed_endpoints = ['web.login', 'web.register', 'web.index' , 'web.faq', 'web.verification', 'web.pfaq']  # Add more endpoints as needed
 
     # Check if the user is not logged in and not accessing allowed endpoints
     if not session.get('user_id') and request.endpoint not in allowed_endpoints:
@@ -120,7 +120,7 @@ def register():
         else:
             # Hash the password and create a new user
             hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
-            new_user = User(username=username, password=hashed_password , email=email, role_id=role, is_approved="False", date_registered=datetime.date.today())
+            new_user = User(username=username, password=hashed_password , email=email, role_id=2, is_approved="False", date_registered=datetime.date.today())
             db.session.add(new_user)
             db.session.commit()
             return render_template("login.html", message="Await admin approval") # Redirect to the login route
@@ -129,6 +129,10 @@ def register():
 
 @web.route("/faq")
 def faq():
+    return render_template("faq.html")
+
+@web.route("/help")
+def help():
     return render_template("faq.html")
     
 
@@ -654,6 +658,15 @@ def download_report(filename):
 @web.route("/verify")
 def verify():
     return render_template("verify.html")
+
+
+@web.route("/verification")
+def verification():
+    return render_template("public_verify.html")
+
+@web.route("/pfaq")
+def pfaq():
+    return render_template("public_faq.html")
 
 @web.route("/generate_certificate")
 @login_required
